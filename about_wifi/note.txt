@@ -1,0 +1,107 @@
+﻿1.uboot cmd：
+setenv bootargs console=ttyS0,115200 coherent_pool=2M earlyprintk root=/dev/mmcblk0p3 rw rootf
+2.saveenv
+mkdir /etc/Wireless/
+mkdir /etc/Wireless/RT2870STA/
+cp mt7601/RT2870STA.dat /etc/Wireless/RT2870STA/MT7601USTA.dat
+ifconfig wlan0 up
+rmmod mt7601Usta.ko
+wpa_supplicant -D wext -c /etc/wpa_supplicant.conf  -i wlan0 &
+wg207:
+wlan0     Link encap:Ethernet  HWaddr 30:EB:1F:0F:2D:72
+          inet6 addr: fe80::32eb:1fff:fe0f:2d72/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:195 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:36234 (35.3 KiB)  TX bytes:0 (0.0 B)
+wg223:
+wlan0     Link encap:Ethernet  HWaddr 30:EB:1F:05:44:E9
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+----------------------------------------------------------------------------------
+root@qbox:/home/wg223# ifconfig wlan0 up
+[ 1405.720000] RTL871X: +871x_drv - drv_open, bup=0
+[ 1405.730000] RTL871X: +rtl8188es_hal_init
+[ 1405.730000] RTL871X: FW does not exit before power on!!
+[ 1405.730000] RTL871X: =>_InitPowerOn_8188ES
+[ 1405.740000] RTL871X: =>_CardEnable
+[ 1405.740000] RTL871X: =>_CardEnable bMacPwrCtrlOn == _TRUE do nothing !!
+[ 1405.750000] RTL871X: <=_CardEnable
+[ 1405.750000] RTL871X: <=_InitPowerOn_8188ES
+[ 1405.760000] RTL871X: PowerOnCheck: val_mix:0x0000063f, res:0x0000063f
+[ 1405.760000] RTL871X: PowerOnCheck: 0x100 the result of cmd52 and cmd53 is the same.
+[ 1405.770000] RTL871X: PowerOnCheck: 0x1B8 test Pass.
+[ 1405.780000] RTL871X: Power on ok!
+[ 1405.780000] RTL871X: rtl8188e_FirmwareDownload fw:NIC, size: 15262
+[ 1405.790000] RTL871X: rtl8188e_FirmwareDownload: fw_ver=1c fw_subver=0000 sig=0x88e1, Month=14, Date=27, Hour=7e, Minute=3b
+[ 1405.920000] RTL871X: polling_fwdl_chksum: Checksum report OK! (1, 0ms), REG_MCUFWDL:0x00030005
+[ 1405.930000] RTL871X: =====> _8051Reset88E(): 8051 reset success .
+[ 1405.930000] RTL871X: _FWFreeToGo: Polling FW ready OK! (1, 0ms), REG_MCUFWDL:0x000300c6
+[ 1405.940000] RTL871X: FWDL success. write_fw:1, 140ms
+[ 1406.200000] ==> rtl8188e_iol_efuse_patch
+[ 1406.230000] RTL871X: HalDetectPwrDownMode(): PDN=0
+[ 1406.240000] RTL871X: Set RF Chip ID to RF_6052 and RF type to 3.
+[ 1406.280000] RTL871X: pDM_Odm TxPowerTrackControl = 1
+[ 1406.460000] RTL871X: DISABLE_BB_RF=0
+[ 1406.460000] RTL871X: IS_HARDWARE_TYPE_8188ES=1
+[ 1406.460000] RTL871X: -rtl8188es_hal_init
+[ 1406.470000] RTL871X: rtl8188es_hal_init in 740ms
+[ 1406.480000] RTL871X: wlan0Port-0  set opmode = 2
+[ 1406.480000] RTL871X: Using the default RF gain.
+[ 1406.490000] RTL871X: MAC Address = 30:eb:1f:05:44:e9
+[ 1406.490000] RTL871X: start rtl8188es_xmit_thread
+[ 1406.500000] RTL871X: -871x_drv - drv_open, bup=1
+[ 1406.500000] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+root@qbox:/home/wg223# [ 1408.500000] RTL871X: ==>rtw_ps_processor .fw_state(8)
+[ 1408.500000] RTL871X: ==>ips_enter cnts:1
+[ 1408.510000] RTL871X: nolinked power save enter
+[ 1408.510000] RTL871X: ===> rtw_ips_pwr_down...................
+[ 1408.520000] RTL871X: ====> rtw_ips_dev_unload...
+[ 1408.540000] RTL871X: =>rtl8188es_hal_deinit
+[ 1408.540000] RTL871X: =>hal_poweroff_8188es
+[ 1408.550000] RTL871X: SetHwReg8188E: bMacPwrCtrlOn=0
+[ 1408.560000] RTL871X: SetHwReg8188E: bMacPwrCtrlOn=0
+[ 1408.560000] RTL871X: <=hal_poweroff_8188es
+[ 1408.560000] RTL871X: <=rtl8188es_hal_deinit
+[ 1408.570000] RTL871X: <=== rtw_ips_pwr_down..................... in 60ms
+------------------------------------------------------------------------------
+Successfully initialized wpa_supplicant
+nl80211: deinit ifname=wlan0 disabled_11b_rates=0
+wlan0: Failed to initialize driver interface
+IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+--------------------------------------------------------------------------------
+root@qbox:/home/qbox10/wifietc/wpa_supplicant# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: sit0: <NOARP> mtu 1480 qdisc noop 
+    link/sit 0.0.0.0 brd 0.0.0.0
+3: usb0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether 12:34:56:78:90:02 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.6/24 brd 192.168.0.255 scope global usb0
+    inet6 fe80::1034:56ff:fe78:9002/64 scope link 
+       valid_lft forever preferred_lft forever
+4: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq qlen 1000
+    link/ether 30:eb:1f:05:44:e9 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.104.49/23 brd 172.16.105.255 scope global wlan0
+    inet6 fe80::32eb:1fff:fe05:44e9/64 scope link 
+       valid_lft forever preferred_lft forever
+8: wlan1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether 30:eb:1f:0f:2d:72 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.43.21/24 brd 192.168.43.255 scope global wlan1
+    inet6 fe80::32eb:1fff:fe0f:2d72/64 scope link 
+       valid_lft forever preferred_lft forever
+9: p2p0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop qlen 1000
+    link/ether 32:eb:1f:0f:2d:72 brd ff:ff:ff:ff:ff:ff
+root@qbox:/home/qbox10/wifietc/wpa_supplicant# ip route
+default via 192.168.43.1 dev wlan1 
+default via 172.16.104.254 dev wlan0 
+172.16.104.0/23 dev wlan0 scope link  src 172.16.104.49 
+192.168.0.0/24 dev usb0 scope link  src 192.168.0.6 
+192.168.43.0/24 dev wlan1 scope link  src 192.168.43.21 
