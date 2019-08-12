@@ -1,0 +1,225 @@
+4.iptables规则匹配
+
+iptables如何查看表和链
+
+大写字母选项：可以实现某种功能，比如添加删除清空规则链；
+
+小写字母选项：用来匹配及其他；
+
+-L ：list 列表
+
+    -n :数字格式显示ip和端口；
+
+    --line-numbers:显示行号；
+
+    -x ： 显示精确值，不要做单位换算；
+
+ 
+
+-t :  指定表
+
+     -t{fillter|nat|mangle|raw}
+
+-v ： 显示详细信息 -v -vvv -vvvv ..可以显示更详细的信息
+
+ 
+
+5.其他子命令：
+
+管理链：
+
+-F ：清空链
+
+清空nat表中的input链，格式如下：
+
+#iptables-t nat -F INPUT
+
+#清空fllter表所有链：
+
+#iptables-F
+
+-P : 设定默认策略，为指定链设置默认策略，格式如下：
+
+#设置fllter表input链的默认规则为丢弃
+
+iptables-t fllter -P INPUT DROP
+
+-N ： 新建一条自定义链（内置链不能删除，如果太多，可以自定义链）
+
+#自定义连只能被调用才可以发挥作用
+
+iptables-N fillter_web
+
+-X : 删除自定义空链，如果链内有规则，则无法删除
+
+-Z ：计算器清零
+
+iptables-Z
+
+-E ：重命名自定义链
+
+ 
+
+iptables管理规则：
+
+-A   ：append附加规则，将新增的规则添加到链的尾部
+
+-I[n] ：插入为第n条规则
+
+-D   : 删除第n条规则
+
+-R[n] : 替换第N条
+
+表和链的对应关系：
+
+fillter ：INPUT FORWORD OUTPUT
+
+nat : PREROUTING POSTROUTING  OUTPUT
+
+使用-t指定表来查看指定表内的规则：
+
+#iptables-t nat -L -n
+
+raw : prerouting output
+
+iptables-t raw -L -n
+
+mangle: prerouting input forword output postrouting
+
+iptables-t mangle -L -n
+
+#查看规则
+
+[root@test3~]# iptables -L -n
+
+
+4. 原理
+netfilter是Linux 核心中一个通用架构，它提供了一系列的”表”(tables)，每个表由若干”链”(chains)组成，而每条链中可以有一条或数条规则(rule)组成。并且系统缺省的表是”filter”。但是在使用NAT的时候，我们所使用的表不再是”filter”，而是”nat”表，所以我们必须使用”-t nat”选项来显式地指明这一点。因为系统缺省的表是”filter”，所以在使用filter功能时，我们没有必要显式的指明”-t filter”。
+同filter表一样，nat表也有三条缺省的”链”(chains)，这三条链也是规则的容器，它们分别是:
+PREROUTING:可以在这里定义进行目的NAT的规则，因为路由器进行路由时只检查数据包的目的ip地址，所以为了使数据包得以正确路由，我们必须在路由之前就进行目的NAT;
+
+POSTROUTING:可以在这里定义进行源NAT的规则，系统在决定了数据包的路由以后在执行该链中的规则。
+
+OUTPUT:定义对本地产生的数据包的目的NAT规则。
+PREROUTING 链：作用是在包刚刚到达防火墙时改变它的目的地址
+OUTPUT 链：改变本地产生的包的目的地址
+#POSTROUTING 链：在包就要离开防火墙之前改变其源地址
+--------------------- 
+编写规则语法：
+
+iptables [-t 表] 大写选项子命令 [规则号] 链名 匹配标准 -j 目标（规则）
+
+目标：
+DROP   :   丢弃
+REJECT :   拒绝
+ACCEPT :   接受
+RETURN ：  返回主链继续匹配
+REDIRECT:  端口重定向
+MASQUERADE :地址伪装
+DNAT :    目标地址转换
+SNAT ：源地址转换
+MARK ：打标签
+
+
+参数 -i, –in-interface 
+范例
+iptables -A INPUT -i eth0
+说明 用来匹配封包是从哪块网卡进入，可以使用通配字符 + 来做大范围匹配，例如： 
+-i eth+ 
+表示所有的 ethernet 网卡 
+也可以使用 ! 运算符进行反向匹配，例如： 
+-i !eth0 
+参数 -o, –out-interface 
+范例
+iptables -A FORWARD -o eth0
+说明 用来匹配封包要从哪 块网卡送出，设定方式同上。
+
+参数 -s, –src, –source 
+范例
+iptables -A INPUT -s 192.168.1.1
+说明 用来匹配封包的来源 IP，可以匹配单机或网络，匹配网络时请用数字来表示 子网掩码，
+例如：-s 192.168.0.0/24
+
+######################################
+1.2 INPUT、FORWARD等规则链和规则
+
+在处理各种数据包时，根据防火墙规则的不同介入时机，iptables供涉及5种默认规则链，从应用时间点的角度理解这些链：
+
+INPUT 链：当接收到防火墙本机地址的数据包（入站）时，应用此链中的规则。
+OUTPUT 链：当防火墙本机向外发送数据包（出站）时，应用此链中的规则。
+FORWARD 链：当接收到需要通过防火墙发送给其他地址的数据包（转发）时，应用此链中的规则。
+PREROUTING 链：在对数据包作路由选择之前，应用此链中的规则，如DNAT。
+POSTROUTING 链：在对数据包作路由选择之后，应用此链中的规则，如SNAT。
+防火墙处理数据包的方式（规则）：
+
+ACCEPT ：允许数据包通过
+DROP ：直接丢弃数据包，不给任何回应信息
+REJECT ：拒绝数据包通过，必要时会给数据发送端一个响应的信息。
+
+SNAT ：源地址转换。在进入路由层面的route之前，重新改写源地址，目标地址不变，并在本机建立NAT表项，当数据返回时，根据NAT表将目的地址数据改写为数据发送出去时候的源地址，并发送给主机。解决内网用户用同一个公网地址上网的问题。
+
+MASQUERADE ，是SNAT的一种特殊形式，适用于像adsl这种临时会变的ip上
+
+DNAT :目标地址转换。和SNAT相反，IP包经过route之后、出本地的网络栈之前，重新修改目标地址，源地址不变，在本机建立NAT表项，当数据返回时，根据NAT表将源地址修改为数据发送过来时的目标地址，并发给远程主机。可以隐藏后端服务器的真实地址。
+
+REDIRECT ：是DNAT的一种特殊形式，将网络包转发到本地host上（不管IP头部指定的目标地址是啥），方便在本机做端口转发。
+
+LOG ：在/var/log/messages文件中记录日志信息，然后将数据包传递给下一条规则
+
+除去最后一个 LOG ，前3条规则匹配数据包后，该数据包不会再往下继续匹配了，所以编写的规则顺序极其关键。
+
+2. Linux数据包路由原理
+######################################
+清空链
+iptables -t nat -F 
+清空fllter表所有链：
+iptables -F 
+#iptables -t nat -A POSTROUTING -j MASQUERADE
+（把sta的ip地址作为ap那边的网关，ap那边就可以上网）
+
+iptables -t nat -A POSTROUTING -s 172.16.100.0/23 -o eth0 -j MASQUERADE
+
+route add -net 192.168.5.0/24 gw 192.168.5.1 dev wlan0
+route del -net 192.168.5.0/24 gw 192.168.5.1 dev wlan0
+route add -net 192.168.245.0/24 gw 192.168.245.2 dev eth0
+route del -net 192.168.245.0/24 gw 192.168.245.2 dev eth0
+
+route del -net 172.16.23.0/24 gw 0.0.0.0 dev eth0
+
+route add -net 0.0.0.0 gw 192.168.5.1 dev wlan0
+（把sta的ip地址作为ap那边的网关gw，ap那边就可以上网）
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+查看iptables规则:
+iptables -L
+
+查看nat表
+iptables -t nat -L
+
+# route  -n
+
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+10.104.64.0     0.0.0.0         255.255.192.0   U     0      0        0 eth0
+169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 eth0
+0.0.0.0         10.104.64.1     0.0.0.0         UG    0      0        0 eth0
+Destination：目的地
+Genmask：路由的网络掩码
+Gateway：该网络通过哪个网关连接出去的（下一跳）
+      0.0.0.0：表示路由直接由本机传送，即局域网的MAC直接发送的
+      IP：表示该路由需要路由器(网关)的转发才能发送
+Flags：标志
+      U Up表示此路由当前为启动状态
+      H Host，表示此网关为一主机
+      G Gateway，表示此网关为一路由器
+      R Reinstate Route，使用动态路由重新初始化的路由
+      D Dynamically,此路由是动态性地写入
+      M Modified，此路由是由路由守护程序或导向器动态修改
+      ! 表示此路由当前为关闭状态
+Iface：这个路由传递数据包的接口
+
+查看路由包从哪里来
+#ip route get 114.114.114.114
+114.114.114.114 via 172.16.104.254 dev wlan0  src 172.16.104.30
+
+

@@ -1,12 +1,142 @@
-﻿1.uboot cmd：
-setenv bootargs console=ttyS0,115200 coherent_pool=2M earlyprintk root=/dev/mmcblk0p3 rw rootf
+!arch=armbaudrate=115200board=sama5d3xekboard_name=sama5d3xekbootargs=console=ttyS0,115200 earlyprintk root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwaitbootcmd=if test ! -n ${dtb_name}; then setenv dtb_name at91-${board_name}.dtb; fi; fatload mmc 0:1 0x21000000 ${dtb_name}; fatload mmc 0:1 0x22000000 uImage; bootm 0x22000000 - 0x21000000bootdelay                                                                                          =0bootenv=env.txtcpu=armv7dtb_name=sama5d31ek.dtbeth1addr=12:34:56:78:90:01ethact=usb_e                                                                                          therethaddr=12:34:56:78:90:00gatewayip=192.168.0.1ipaddr=192.168.0.6netmask=255.255.255.0serverip=192.168.0.8soc=at91stderr=serialstdin=serialstdout=serialusbnet_devaddr=12:3                                                                                          4:56:78:90:02usbnet_hostaddr=12:34:56:78:90:03vendor=atmel
+1.uboot cmd：
+setenv bootargs console=ttyS0,115200 coherent_pool=2M earlyprintk root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait
 2.saveenv
 mkdir /etc/Wireless/
 mkdir /etc/Wireless/RT2870STA/
 cp mt7601/RT2870STA.dat /etc/Wireless/RT2870STA/MT7601USTA.dat
+
+:
+insmod /home/mt7601/mt7601Usta.ko
+
+rtusb init rt2870 --->
+[  261.650000]
+[  261.650000]
+[  261.650000] === pAd = d169c000, size = 1596064 ===
+[  261.650000]
+[  261.650000] <-- RTMPAllocTxRxRingMemory, Status=0
+[  261.660000] <-- RTMPAllocAdapterBlock, Status=0
+[  261.670000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x8
+[  261.670000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x4
+[  261.680000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x5
+[  261.680000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x6
+[  261.690000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x7
+[  261.690000] RTMP_COM_IoctlHandle():pAd->BulkOutEpAddr=0x9
+[  261.700000] STA Driver version-JEDI.MP1.mt7601u.v1.9
+[  261.710000] ***************host->ios.clockr:400000
+[  261.710000] ==>WaitForAsicReady MAC_CSR0=0x76010500
+[  261.720000] ==>WaitForAsicReady MAC_CSR0=0x76010500
+[  261.730000] NVM is EFUSE
+[  261.730000] Endpoint(8) is for In-band Command
+[  261.730000] Endpoint(4) is for WMM0 AC0
+[  261.740000] Endpoint(5) is for WMM0 AC1
+[  261.740000] Endpoint(6) is for WMM0 AC2
+[  261.740000] Endpoint(7) is for WMM0 AC3
+[  261.750000] Endpoint(9) is for WMM1 AC0
+[  261.750000] Endpoint(84) is for Data-In
+[  261.760000] Endpoint(85) is for Command Rsp
+[  261.760000] 80211> RFICType = 3
+[  261.770000] NumOfChan ===> 58
+[  261.770000] 80211> Number of channel = 0x44
+[  261.770000] 80211> Number of rate = 12
+[  261.780000] 80211> CurTxPower = 0 dBm
+[  261.780000] 80211> TxStream = 0
+[  261.790000] crda> requlation requestion by core: 00
+[  261.840000] 80211> CFG80211_Register
+[  261.870000] usbcore: registered new interface driver rt2870
+:
 ifconfig wlan0 up
+
+ 1. LDO_CTR0(6c) = a64799, PMU_OCLEVEL c
+[   49.470000] 2. LDO_CTR0(6c) = a6478d, PMU_OCLEVEL 6
+[   49.480000] ==>WaitForAsicReady MAC_CSR0=0x76010500
+[   49.490000] FW Version:0.1.00 Build:7640
+[   49.500000] Build Time:201511182118____
+[   49.500000] ILM Length = 52136(bytes)
+[   49.510000] DLM Length = 0(bytes)
+[   49.520000] Loading FW....
+[   49.560000] RTMP_TimerListAdd: add timer obj d1434544!
+[   49.570000] RTMP_TimerListAdd: add timer obj d143458c!
+[   49.570000] RTMP_TimerListAdd: add timer obj d14345d4!
+[   49.580000] RTMP_TimerListAdd: add timer obj d14344fc!
+[   49.590000] RTMP_TimerListAdd: add timer obj d1434424!
+[   49.590000] RTMP_TimerListAdd: add timer obj d143446c!
+[   49.600000] RTMP_TimerListAdd: add timer obj d13c8dfc!
+[   49.600000] RTMP_TimerListAdd: add timer obj d13b5588!
+[   49.610000] RTMP_TimerListAdd: add timer obj d13b55d4!
+[   49.610000] RTMP_TimerListAdd: add timer obj d13c8ee4!
+[   49.620000] RTMP_TimerListAdd: add timer obj d13b7f98!
+[   49.620000] RTMP_TimerListAdd: add timer obj d13b77a8!
+[   49.630000] RTMP_TimerListAdd: add timer obj d13b7f4c!
+[   49.630000] RTMP_TimerListAdd: add timer obj d13b836c!
+[   49.640000] RTMP_TimerListAdd: add timer obj d13b7fe4!
+[   49.640000] RTMP_TimerListAdd: add timer obj d13b8030!
+[   49.650000] RTMP_TimerListAdd: add timer obj d13b807c!
+[   49.650000] RTMP_TimerListAdd: add timer obj d130f46c!
+[   49.660000] RTMP_TimerListAdd: add timer obj d130ec7c!
+[   49.660000] RTMP_TimerListAdd: add timer obj d130f420!
+[   49.670000] RTMP_TimerListAdd: add timer obj d130f840!
+[   49.670000] RTMP_TimerListAdd: add timer obj d130f72c!
+[   49.680000] RTMP_TimerListAdd: add timer obj d134784c!
+[   49.680000] RTMP_TimerListAdd: add timer obj d134705c!
+[   49.690000] RTMP_TimerListAdd: add timer obj d1347800!
+[   49.690000] RTMP_TimerListAdd: add timer obj d1347c20!
+[   49.700000] RTMP_TimerListAdd: add timer obj d1347898!
+[   49.700000] RTMP_TimerListAdd: add timer obj d13478e4!
+[   49.710000] RTMP_TimerListAdd: add timer obj d1347930!
+[   49.710000] RTMP_TimerListAdd: add timer obj d13c8d6c!
+[   49.720000] RTMP_TimerListAdd: add timer obj d13c8e9c!
+[   49.720000] RTMP_TimerListAdd: add timer obj d148e3d8!
+[   49.730000] RTMP_TimerListAdd: add timer obj d148e420!
+[   49.730000] RTMP_TimerListAdd: add timer obj d148e468!
+[   49.740000] RTMP_TimerListAdd: add timer obj d148e4b0!
+[   49.740000] RTMP_TimerListAdd: add timer obj d148e4f8!
+[   49.750000] RTMP_TimerListAdd: add timer obj d148e544!
+[   49.760000] RTMP_TimerListAdd: add timer obj d14344b4!
+[   49.760000] RTMP_TimerListAdd: add timer obj d13b458c!
+[   49.770000] RTMP_TimerListAdd: add timer obj d13b4544!
+[   49.770000] RTMP_TimerListAdd: add timer obj d13b44fc!
+[   49.780000] RTMP_TimerListAdd: add timer obj d13c8db4!
+[   49.780000] P2pGroupTabInit .
+[   49.790000] P2pScanChannelDefault <=== count = 3, Channels are 1, 6,11 separately
+[   49.790000] P2pCfgInit::
+[   49.820000] ==>WaitForAsicReady MAC_CSR0=0x7601050
+
+:
+wpa_supplicant -iwlan0 -Dnl80211 -c/etc/wpa_supplicant.conf -B &
+
+80211> CFG80211_OpsPmksaFlush ==>
+[   64.900000] pIoctlScan->ScanType=0
+[   67.200000] PeerBeaconAtJoinAction(): HT-CtrlChannel=11, CentralChannel=>11
+[   67.210000] PeerBeaconAtJoinAction(): Set CentralChannel=11
+[   67.260000] !!!Infra LINK UP !!!
+[   67.260000] !!! LINK UP !!! (BssType=1, AID=3, ssid=zhd-1, Channel=11, CentralChannel = 11)
+[   67.370000] 80211> KeyDel isPairwise 0
+[   67.370000] 80211> STA Key Del
+[   67.380000] 80211> KeyDel isPairwise 0
+[   67.380000] 80211> STA Key Del
+[   67.380000] 80211> KeyDel isPairwise 0
+[   67.390000] 80211> STA Key Del
+[   67.390000] 80211> KeyDel isPairwise 0
+[   67.390000] 80211> STA Key Del
+[   67.400000] 80211> KeyDel isPairwise 0
+[   67.400000] 80211> STA Key Del
+[   67.400000] 80211> KeyDel isPairwise 0
+[   67.410000] 80211> STA Key Del
+[   67.420000] cfg80211: Calling CRDA for country: CN
+[   67.510000] pIoctlScan->ScanType=0
+[   67.730000] 80211> Connect bssid 10:0e:0e:20:0f:57
+[   68.330000] PeerBeaconAtJoinAction(): HT-CtrlChannel=6, CentralChannel=>6
+[   68.340000] PeerBeaconAtJoinAction(): Set CentralChannel=6
+[   68.650000] Enter:sama5d3_hw_params, 166, rate=44100
+[   68.720000] !!!Infra LINK UP !!!
+[   68.720000] !!! LINK UP !!! (BssType=1, AID=8, ssid=zhd-1, Channel=6, CentralChannel = 6)
+[   68.760000] RTMP_TimerListAdd: add timer obj d14853a0!
+
+
 rmmod mt7601Usta.ko
 wpa_supplicant -D wext -c /etc/wpa_supplicant.conf  -i wlan0 &
+wg229: wpa_supplicant -iwlan0 -Dnl80211 -c/usr/share/wl18xx/wpa_supplicant.conf &
 wg207:
 wlan0     Link encap:Ethernet  HWaddr 30:EB:1F:0F:2D:72
           inet6 addr: fe80::32eb:1fff:fe0f:2d72/64 Scope:Link
@@ -105,3 +235,28 @@ default via 172.16.104.254 dev wlan0
 172.16.104.0/23 dev wlan0 scope link  src 172.16.104.49 
 192.168.0.0/24 dev usb0 scope link  src 192.168.0.6 
 192.168.43.0/24 dev wlan1 scope link  src 192.168.43.21 
+-p/sys/class/net/wlan0
+自带：wpa_supplicant -iwlan0 -Dnl80211 -c/etc/wpa_supplicant.conf -B &
+可用：wpa_supplicant -D wext -c /etc/wpa_supplicant.conf -i wlan0  &
+#!/bin/sh
+
+insmod /home/wg223/wlan.ko
+sleep 1
+ifconfig wlan0 up
+sleep 1
+wpa_supplicant -D wext -c /etc/wpa_supplicant.conf  -i wlan0 &
+
+
+不能使用同一个wpa_supplicant.conf 
+insmod /home/mt7601/mt7601Usta.ko
+sleep 1
+ifconfig wlan1 up
+sleep 1
+wpa_supplicant -D wext -c /etc/wpa_supplicant.conf  -i wlan1 &
+
+ls /var/run/
+会有 wpa_supplicant目录
+lsmod
+
+
+
