@@ -1,0 +1,48 @@
+#!/bin/sh
+
+upgrade(){
+    mountPath="/home/ftp"
+    cmdPath=$mountPath/cmd.sh
+    echo "update: mount now .."
+    mount -t ext4 $1 $mountPath
+    if [ ! -f $cmdPath ]; then
+        echo "update: mount $1 to $mountPath failed !!"
+        return
+    fi
+    chmod a+x $cmdPath
+    echo "update: run cmd now .."
+    $cmdPath
+    echo "update: umount now .."
+    umount $mountPath
+    rm -rf $1
+    if [ -f $cmdPath ]; then
+        echo "update: umount $mountPath error !!"
+        return
+    fi
+    echo "update: success, reboot now .."
+    reboot -f
+    sleep 10
+}
+
+check(){
+    checkPath="/mnt/devdisk/update/"
+    fileName=`ls $checkPath | grep '_update_'`
+    if [ -z $fileName ]; then
+        return
+    fi
+    echo "update: find $fileName"
+    upgrade $checkPath$fileName
+}
+
+case "$1" in
+  start)
+        check
+        ;;
+  stop)
+        ;;
+  restart|reload)
+        ;;
+  *)
+        ;;
+esac
+

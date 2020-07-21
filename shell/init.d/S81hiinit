@@ -1,0 +1,35 @@
+#! /bin/sh
+
+#/bin/busybox1 telnetd&
+case "$1" in
+  start)
+        cd /mnt/ko/
+        ./load3516dv300 -i -sensor0 imx327 -sensor1 imx327 -osmem 160
+        telnetd
+        #insmod /mnt/ko/extdrv/htxjgpio.ko
+        
+        /root/fw6118_init.sh &
+        
+        cd -
+	    ;;
+  stop)
+#        cd /mnt/ko/
+#        ./load3516dv300 -r
+#        cd -
+		net=`ls /dev/ttyUSB1`
+
+	
+		if [ -e $net ]; 
+		then	
+				cd /sys/class/gpio/gpio6
+				#echo out > direction
+				#sleep 1
+				echo 1 > value
+				sleep 0.6
+				echo 0 > value
+				sleep 2
+				echo OK!
+		fi
+        ;;
+esac
+
