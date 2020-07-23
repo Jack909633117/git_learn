@@ -1,0 +1,26 @@
+﻿mpp包里面视频编码的例子测试方法：
+cd mpp/sample/venc
+make clean
+make
+
+编译正常后，会生成sample_venc 这个拷贝到nfs目录
+
+挂载nfs命令测试：
+mount -t nfs -o nolock 192.168.1.199:/root/hi3516/nfs /home;cd /home
+mount -t nfs -o nolock 172.16.25.206:/mysdc/root/hi3516/nfs /home;cd /home
+mount -t nfs -o nolock 172.16.25.206:/mysdc/root/dv300/mpp /mpp; cd /mpp
+ffmpeg -i record-720p.h264 -c:v libx264 -profile:v high    -level 4.2 -c:a copy -y baseline_720p.h264
+
+./ffmpeg -i ./video.mp4 -vcodec h264 -preset fast -b:v 2000k ttt.h264
+
+./ffmpeg -i ./video.mp4 -vcodec h264 -s 1280x720 -r 30 -t 10 ttt.h264
+./ffmpeg -i ./video.mp4 -vcodec h264 -s 1920x1080 -r 30 -t 5 ttt.h264
+./ffmpeg -i ./video.mp4 -vcodec h264 -s 1280x720 -t 5 ttt.h264
+./ffmpeg -i ./video.mp4 -vcodec h264 -s 720x480 -t 5 ttt.h264
+./ffmpeg -i ./1080P.h264 -vcodec h264 -s 1280x720 -t 5 ttt.h264
+./ffmpeg -f mp4 -i ./video.mp4 -f h264 -s 1280x720 -t 5 ttt.h264
+./sample_venc 0
+运行就行
+会在当前目录生成1个h264的码流文件，1个h265的码流文件
+h265码流文件使用资料里面电h265码流文件播放工具
+h264码流文件使用VLC播放

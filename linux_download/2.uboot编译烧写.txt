@@ -1,0 +1,12 @@
+﻿编译方法：
+cd /root/hi3516/u-boot-2010.06
+./mk3516.sh
+
+最终生成的u-boot-hi3516ev300.bin这个文件烧到板子上面去，编译命令在mk3516ev100.sh这个脚本里面，客户自行查看
+
+烧uboot的话，请评估清楚自己对下面面命令的理解，没有完全搞清楚这些命令的意思，请不要乱烧板子uboot，有风险，客户自行承担搞坏板子uboot的风险，uboot被破坏后需要拆flash芯片下来烧好在焊接回板子。
+uboot烧写命令：
+setenv ipaddr 192.168.1.10;setenv serverip 192.168.1.199;mw.b 0x42000000 0xFF 0x80000;tftp 0x42000000 u-boot-hi3516ev300.bin;sf probe 0;sf erase 0 0x80000;sf write 0x42000000 0 0x80000;reset
+
+
+

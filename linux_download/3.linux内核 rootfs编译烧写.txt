@@ -1,0 +1,58 @@
+编译内核
+cd ./linux-4.8.y
+./mk3516.sh
+
+mk3516.sh 脚本里面包含了编译linux内核所需的所有的命令，具体看mk3516.sh文件，编译成功将生成在目录arch/arm/boot/uImage文件，这个就是要烧录到板子上的
+
+
+制作rootfs文件系统
+./mkfs.jffs2 -d ./rootfs -l -e 0x10000 -o rootfs-imx335.jffs2
+生成的rootfs.jffs2这个就是要烧录到板子上的文件
+
+
+地址空间说明
+        |    768K    |      3072K    |      12544K           |
+        |------------|---------------|-----------------------|
+        |    boot    |     kernel    |     rootfs            |
+
+板子上电时按住crtl+c，进入uboot里面烧写内核，rootfs这些
+uboot里面烧写内核
+setenv ipaddr 172.16.25.197;setenv serverip 172.16.25.245;mw.b 0x42000000 0xFF 0x300000;tftp 0x42000000 uImage;sf probe 0;sf erase 0xC0000 0x300000;sf write 0x42000000 0xC0000 0x300000
+
+烧写rootfs文件系统
+mw.b 0x42000000 0xFF 0xD90000;tftp 0x42000000 rootfs-imx335.jffs2old;sf probe 0;sf erase 0x3C0000 0xC40000;sf write 0x42000000 0x3C0000 0xC40000
+############################挂载文件系统
+setenv bootargs mem=64M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.206:/mysdc/root/hi3516/rootfs-ev300,v3,tcp rw ip=172.16.25.159:172.16.25.206:172.16.25.254:255.255.255.0::eth0:on
+setenv bootargs mem=64M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.206:/mysdc/root/hi3516/nfs/rootfs-ev300,v3,tcp rw ip=172.16.25.159:172.16.25.206:172.16.25.254:255.255.255.0::eth0:on
+setenv bootargs mem=64M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.206:/mysdc/root/hi3516/rootfs,v3,tcp rw ip=172.16.25.159:172.16.25.206:172.16.25.254:255.255.255.0::eth0:on
+setenv bootargs mem=128M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.245:/mysdc/root/dv300/rootfs,v3,tcp rw ip=172.16.25.159:172.16.25.245:172.16.25.254:255.255.255.0::eth0:on
+
+启动命令：
+setenv bootargs 'mem=256M console=ttyAMA0,115200 ethaddr=12:23:56:78:90:00 ubi.mtd=2 root=ubi0:ubifs rootfstype=ubifs rw mtdparts=hinand:1M(boot)ro,4M(kernel)ro,150M(ubi)'
+############################
+设置启动参数和启动命令
+setenv bootargs 'mem=64M console=ttyAMA0,115200 root=/dev/mtdblock2 rw rootfstype=jffs2 mtdparts=hi_sfc:768K(Uboot),3072K(kernel),13888K(rootfs)';
+setenv bootcmd 'sf probe 0;sf read 0x42000000 0xC0000 0x300000;bootm 0x42000000';saveenv;reset
+
+setenv bootargs 'mem=64M console=ttyAMA0,115200 root=/dev/mtdblock2 rw rootfstype=jffs2 mtdparts=hi_sfc:768K(Uboot),3072K(kernel),50M(rootfs)';
+setenv bootcmd 'sf probe 0;sf read 0x42000000 0xC0000 0x300000;bootm 0x42000000';saveenv;reset
+setenv bootargs 'mem=64M console=ttyAMA0,115200 coherent_pool=2M root=/dev/mtdblock2 rw rootfstype=jffs2 mtdparts=hi_sfc:768K(Uboot),3072K(kernel),13888K(rootfs)';setenv bootcmd 'sf probe 0;sf read 0x42000000 0xC0000 0x300000;bootm 0x42000000';saveenv;reset
+setenv bootcmd 'mw.b 0x42000000 0xFF 0x300000;tftp 0x42000000 uImage;;bootm 0x42000000'
+setenv bootcmd 'tftp 0x81000000 uImage_ap_dv300;bootm 0x81000000'
+
+########DV300##########################
+bootargs=mem=128M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.23.202:/home/sean/workspace/nfsboot/rootfs-dv300,v3,tcp rw ip=172.16.23.33:172.16.23.202:172.16.23.254:255.255.255.0::eth0:on blkdevparts=mmcblk0:1M(boot),4M(kernel),1024M(rootfs)
+bootcmd=mmc read 0 0x82000000 0x800 0x2000;bootm 0x82000000
+
+setenv bootargs mem=128M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.245:/mysdc/root/dv300/rootfs,v3,tcp rw ip=172.16.25.159:172.16.25.245:172.16.25.254:255.255.255.0::eth0:on
+
+setenv bootargs mem=128M console=ttyAMA0,115200 earlyprintk root=/dev/nfs init=/linuxrc nfsroot=172.16.25.245:/mysdb/fw61178/rootfs/rootfs,v3,tcp rw ip=172.16.25.159:172.16.25.245:172.16.25.254:255.255.255.0::eth0:on
+start-stop-daemon -S -q -c redis:redis -b  --exec /usr/bin/redis-server -- /etc/redis.conf
+烧写rootfs文件系统
+mw.b 0x82000000 0xFF 0x01000000;tftp 0x82000000 rootfs_hi3516dv300_2k_128k_32M.ubifs;nand write 0x82000000 0x00a00000 0x01000000
+##################################
+
+
+
+
+
