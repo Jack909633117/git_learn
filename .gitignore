@@ -1,0 +1,5 @@
+*~
+*.orig
+*.o
+.vscode
+settings.json
