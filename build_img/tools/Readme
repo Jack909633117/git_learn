@@ -1,0 +1,13 @@
+Qbox10 eMMC分区说明
+0~10MB			预留空间，暂未使用，计划后期扩展安全使用
+10MB~20MB		boot分区，用于系统boot.bin、u-boot.bin、kernel文件的存放
+20MB~320MB		linux根文件系统区域，总计300MB大小（具体由system.img决定，只能小于等于300MB，这里决定允许system.img文件最大为320MB）
+320MB~420MB		update数据存储空间
+420MB~末尾		static数据存储空间
+
+system.img镜像分区说明
+0~10MB			预留空间，暂未使用，计划后期扩展安全使用
+10MB~20MB		boot分区，用于系统boot.bin、u-boot.bin、kernel文件的存放
+20MB~240MB		linux根文件系统区域，总计220MB大小（这种情况会造成eMMC分区中第三个分区容量未占满）
+
+生成system.img的命令是:./make-system.sh all 240	（最后的240参数最大可设置为320）
