@@ -1,0 +1,7 @@
+# set shell environment in /etc/profile.d/usr_env.sh script.
+
+# add user initialization in script /root/usrinit.rc
+
+# app autostart add in script /root/usrinit.rc
+
+# ssh,ftp,telnet in service.

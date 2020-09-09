@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# example: gpio_init 10 out
+gpio_init(){
+    cd /sys/class/gpio
+    if [ -e ./gpio${1} ]; then
+        echo $1 > ./unexport
+    fi
+    echo $1 > ./export
+    echo $2 > ./gpio${1}/direction 
+    cd -
+}
+
+gpio_deinit(){
+    echo $1 > /sys/class/gpio/unexport
+}
+
+# example: gpio_set 10 1
+gpio_set(){
+    echo $2 > /sys/class/gpio/gpio${1}/value
+}
+
+# example: gpio_get 10 1
+gpio_get(){
+    ret=`cat /sys/class/gpio/gpio${1}/value`
+    return $ret
+}
+
+check(){
+    gpio_init 5 in
+    gpio_init 64 in
+    gpio_init 35 in
+    gpio_init 48 in
+    gpio_init 46 in
+    k1=`cat /sys/class/gpio/gpio5/value`
+    k2=`cat /sys/class/gpio/gpio64/value`
+    k3=`cat /sys/class/gpio/gpio35/value`
+    k4=`cat /sys/class/gpio/gpio48/value`
+    k5=`cat /sys/class/gpio/gpio46/value`
+    if [[ "$k1" == "0" ]] && [[ "$k2" == "0" ]] && [[ "$k3" == "1" ]] && [[ "$k4" == "1" ]] && [[ "$k5" == "1" ]]; then
+        /root/test/qbox10_main
+        reboot -f
+        sleep 10
+    fi
+    gpio_deinit 5
+    gpio_deinit 64
+    gpio_deinit 35
+    gpio_deinit 48
+    gpio_deinit 46
+}
+
+case "$1" in
+    start)
+        check
+        ;;
+    stop)
+        ;;
+esac
+

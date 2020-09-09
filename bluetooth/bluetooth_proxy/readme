@@ -1,0 +1,11 @@
+//recv
+gcc/arm-linux-gnueabihf-gcc -o bluetooth_proxy.so -shared -fPIC bluetooth_proxy.c app_fifo.c
+gcc/arm-linux-gnueabihf-gcc -o bt_msg_recv_simple bt_msg_recv_simple.c app_fifo.c
+
+//send 
+python bt_msg_send_simple.py
+
+
+gcc/arm-linux-gnueabihf-gcc -o bluetooth_proxy.so -shared -fPIC bluetooth_proxy.c app_fifo.c -std=gnu99
+gcc/arm-linux-gnueabihf-gcc -o bt_msg_recv_simple bt_msg_recv_simple.c app_fifo.c -std=gnu99
+

@@ -1,0 +1,18 @@
+1) install golang
+curl -O https://storage.googleapis.com/golang/go1.9.linux-amd64.tar.gz  
+tar -C /usr/local -zxvf go1.9.linux-amd64.tar.gz  
+mkdir -p ~/go/src  
+echo "export GOPATH=$HOME/go" >> ~/.bashrc  
+echo "export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin" >> ~/.bashrc  
+source ~/.bashrc  
+go version
+
+2) compile gatt
+https://github.com/paypal/gatt
+cp gatt-master.zip ~/go/src/github.com/paypal
+GOARCH=arm GOARM=7 GOOS=linux go build examples/server.go
+./server
+
+3) https://github.com/Jumperr-labs/python-gatt-server
+
+4) https://github.com/noble/bleno

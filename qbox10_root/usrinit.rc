@@ -1,0 +1,62 @@
+#!/bin/sh
+# user initialization script.
+use_storage_file="/etc/use_storage"
+upgrade_path="/mnt/devdisk/update/upgrade"
+config_path="/mnt/devdisk/update/config"
+
+#check upgrade
+upgrade -c -d Qbox10 -vf /usr/local/qbox10/config/system.conf -nf /usr/local/qbox10/config/system.conf
+if [ $? -eq 1 ] ; then
+	echo "reboot to bak system now ..."
+	cp /mnt/boot/uboot-bak-system.env /mnt/boot/uboot.env
+    reboot -f
+else
+	rm $upgrade_path/*update_*
+fi
+
+#ln -sf /etc/ppp/resolv.conf /etc/resolv.conf
+
+#hwclock -s
+#rm -r /usr/local/bluez/var/run/dbus
+#ln -s /run/dbus/ /usr/local/bluez/var/run/	#bluez need
+
+####### ip init ########
+# ifconfig eth0 192.168.1.126 netmask 255.255.255.0
+# ifconfig eth0 up
+# route add default gw 192.168.1.1
+# echo nameserver 192.168.1.1 >>/etc/resolv.conf
+# echo nameserver 8.8.8.8 >>/etc/resolv.conf
+
+if [ -f $use_storage_file ]; then
+	echo "find use_storage"
+	/usr/sbin/storage.sh 
+fi
+#/usr/sbin/storage.sh 
+/usr/local/alsa/sbin/alsactl restore
+wmix &
+/root/alsa_check.sh &
+/root/wl18xx_init.sh #load wifi driver
+/usr/sbin/redis-server /usr/local/qbox10/redis/etc/redis.conf
+#/root/node_websocket.sh
+#/root/py_http.sh
+#/root/py_websocket.sh
+/root/py_server.sh
+/root/py_signalr.sh
+#/usr/local/alsa/bin/alsa.sh
+/usr/local/qbox10/bluetooth/bluez_init.sh &
+#/usr/sbin/poc_client &
+#sleep 0.2
+
+if [ ! -d "$upgrade_path" ]; then  
+	mkdir "$upgrade_path"  
+fi
+if [ ! -d "$config_path" ]; then  
+	mkdir "$config_path"  
+fi
+
+#mount.sh
+/root/qbox_start.sh &
+/root/4g_start.sh &
+/root/watch_dog_run.sh all & # pppd, qbox10_main
+#/root/wifi_deal.sh ap ppp0 &  #start ap
+#/root/wifi_deal.sh sta NETGEAR royalmoon369 & #start sta
