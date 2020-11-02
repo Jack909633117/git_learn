@@ -12,6 +12,7 @@ menuconfig INPUT_KEYBOARD
 
 if INPUT_KEYBOARD
 
+#按键驱动传参
 config IO_KEYBOARD
 	tristate "io keyboard"
 	help

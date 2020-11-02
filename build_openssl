@@ -1,0 +1,11 @@
+
+01:     for arm
+./config no-asm shared --prefix=/xxxxx安装路径/openssl_1.1.0f/for-arm-linux-install --cross-compile-prefix=/mysdb/kernel_make//arm-linux-gcc-4.7/bin/arm-linux-gnueabihf-
+
+Makefile 中删除 " -m64"  
+
+02:     for ubuntu
+./config no-asm shared --prefix=/xxxxx安装路径/openssl_1.1.0f/for-ubuntu-linux-install 
+
+make 
+make install
